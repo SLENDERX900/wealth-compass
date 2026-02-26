@@ -1,12 +1,37 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import ScrollProgress from "@/components/aurora/ScrollProgress";
+import HeroSection from "@/sections/HeroSection";
+import ImpactSection from "@/sections/ImpactSection";
+import SocietySection from "@/sections/SocietySection";
+import CarbonTaxSection from "@/sections/CarbonTaxSection";
+import PortfolioSection from "@/sections/PortfolioSection";
+import ESGSection from "@/sections/ESGSection";
+import PersonasSection from "@/sections/PersonasSection";
+import PreferencesSection from "@/sections/PreferencesSection";
+import ScenariosSection from "@/sections/ScenariosSection";
+import NudgesSection from "@/sections/NudgesSection";
+import AdvisorSection from "@/sections/AdvisorSection";
+import RewardsSection from "@/sections/RewardsSection";
+import ComplianceSection from "@/sections/ComplianceSection";
+import ClosingSection from "@/sections/ClosingSection";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <ScrollProgress />
+      <HeroSection />
+      <ImpactSection />
+      <SocietySection />
+      <CarbonTaxSection />
+      <PortfolioSection />
+      <ESGSection />
+      <PersonasSection />
+      <PreferencesSection />
+      <ScenariosSection />
+      <NudgesSection />
+      <AdvisorSection />
+      <RewardsSection />
+      <ComplianceSection />
+      <ClosingSection />
     </div>
   );
 };
