@@ -6,6 +6,7 @@ import GradientHeadline from "@/components/aurora/GradientHeadline";
 import SectionLayout from "@/components/aurora/SectionLayout";
 import IPhoneMockup from "@/components/aurora/IPhoneMockup";
 import FilterToggleGroup from "@/components/aurora/FilterToggleGroup";
+import PhoneNavBar from "@/components/aurora/PhoneNavBar";
 
 const advisors = [
   { id: 1, name: "Sarah Chen", initials: "SC", specialty: "Sustainable Equities", credentials: ["CFA Charterholder", "GSIA Certified", "10+ years ESG"], formal: ["I recommend reallocating 15% toward renewable energy funds.", "Your risk assessment indicates moderate exposure."], casual: ["I'd suggest moving 15% into renewables — great upside!", "Your risk looks manageable, nothing to worry about!"] },
@@ -19,6 +20,7 @@ const AdvisorSection = () => {
   const [showCredentials, setShowCredentials] = useState(false);
   const [tone, setTone] = useState<"Formal" | "Casual">("Formal");
   const [chatMessages, setChatMessages] = useState<string[]>([]);
+  const [activeNav, setActiveNav] = useState("insights");
 
   const messages = tone === "Formal" ? advisor.formal : advisor.casual;
 
@@ -43,6 +45,8 @@ const AdvisorSection = () => {
       <ScrollReveal delay={0.3} className="flex justify-center">
         <IPhoneMockup>
           <div className="h-full bg-white text-gray-900 flex flex-col">
+            {activeNav === "insights" ? (
+              <>
             <div className="pt-10 px-3 pb-1">
               <p className="text-[10px] uppercase tracking-widest opacity-50 text-center mb-2">Advisor</p>
 

@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { LineChart, ArrowUpRight, Lightbulb, Wallet, Activity } from "lucide-react";
+import { Activity } from "lucide-react";
 import ScrollReveal from "@/components/aurora/ScrollReveal";
 import SectionLabel from "@/components/aurora/SectionLabel";
 import GradientHeadline from "@/components/aurora/GradientHeadline";
 import IPhoneMockup from "@/components/aurora/IPhoneMockup";
 import ESGScoreRing from "@/components/aurora/ESGScoreRing";
 import FilterToggleGroup from "@/components/aurora/FilterToggleGroup";
+import PhoneNavBar from "@/components/aurora/PhoneNavBar";
 
 const HeroSection = () => {
   const [appTheme, setAppTheme] = useState<"light" | "dark">("light");
@@ -192,36 +193,8 @@ const HeroSection = () => {
 
                 </div>
 
-                {/* Bottom tab bar - Professional Icons */}
-                <div className={`flex justify-between px-4 pb-5 pt-3 border-t relative z-[9999] cursor-pointer ${dark ? 'border-gray-800 bg-gray-900/90' : 'border-gray-100 bg-white/90'} backdrop-blur-md`}>
-                  {[
-                    { id: "portfolio", label: "Portfolio", icon: Wallet },
-                    { id: "invest", label: "Invest", icon: LineChart },
-                    { id: "transfer", label: "Transfer", icon: ArrowUpRight },
-                    { id: "insights", label: "Insights", icon: Lightbulb },
-                  ].map((btn) => {
-                    const Icon = btn.icon;
-                    const isActive = activeScreen === btn.id;
-                    return (
-                      <button
-                        key={btn.id}
-                        onPointerDown={(e) => { 
-                          e.preventDefault(); 
-                          e.stopPropagation(); 
-                          setActiveScreen(btn.id); 
-                        }}
-                        className={`flex flex-col items-center gap-1 min-w-[50px] transition-colors ${
-                          isActive 
-                            ? (dark ? "text-emerald-400" : "text-emerald-600") 
-                            : "text-gray-400 hover:text-gray-600"
-                        }`}
-                      >
-                        <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
-                        <span className="text-[9px] font-medium">{btn.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
+                {/* Bottom tab bar */}
+                <PhoneNavBar activeTab={activeScreen} onTabChange={setActiveScreen} dark={dark} />
               </div>
             </IPhoneMockup>
           </ScrollReveal>

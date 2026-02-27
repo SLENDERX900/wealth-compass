@@ -8,6 +8,7 @@ import IPhoneMockup from "@/components/aurora/IPhoneMockup";
 import FilterToggleGroup from "@/components/aurora/FilterToggleGroup";
 import ImpactCounter from "@/components/aurora/ImpactCounter";
 import { Slider } from "@/components/ui/slider";
+import PhoneNavBar from "@/components/aurora/PhoneNavBar";
 
 const taxData: Record<string, { milestones: { year: number; tax: number; impact: number; cost: number }[] }> = {
   Current: {
@@ -53,6 +54,7 @@ const CarbonTaxSection = () => {
   const [scenario, setScenario] = useState("Current");
   const [profile, setProfile] = useState("You");
   const [showMAS, setShowMAS] = useState(false);
+  const [activeNav, setActiveNav] = useState("insights");
 
   const scenarioData = taxData[scenario];
   const current = scenarioData.milestones[yearIndex[0]] || scenarioData.milestones[0];
@@ -83,16 +85,14 @@ const CarbonTaxSection = () => {
       <ScrollReveal delay={0.3} className="flex justify-center">
         <IPhoneMockup>
           <div className="h-full bg-white text-gray-900 flex flex-col">
+            {activeNav === "insights" ? (
+              <>
             <div className="pt-10 px-3 pb-1">
               <p className="text-[10px] uppercase tracking-widest opacity-50 text-center mb-2">Carbon Tax Calculator</p>
-
-              {/* Scenario */}
               <FilterToggleGroup compact options={["Current", "Optimistic", "Aggressive"]} selected={scenario} onChange={setScenario} className="justify-center mb-1" />
-              {/* Profile */}
               <FilterToggleGroup compact options={["You", "Average", "Industry"]} selected={profile} onChange={setProfile} className="justify-center mb-2" />
             </div>
 
-            {/* Timeline bar + slider */}
             <div className="px-3 mb-2" onClick={(e) => e.stopPropagation()}>
               <div className="h-1 rounded-full mb-1" style={{ background: "linear-gradient(90deg, hsl(155 100% 80%), hsl(46 97% 64%))" }} />
               <div className="flex justify-between text-[8px] text-gray-400 mb-1">
@@ -101,7 +101,6 @@ const CarbonTaxSection = () => {
               <Slider value={yearIndex} onValueChange={setYearIndex} min={0} max={scenarioData.milestones.length - 1} step={1} className="w-full" />
             </div>
 
-            {/* Stats */}
             <div className="px-3 grid grid-cols-3 gap-1.5 mb-2">
               {[
                 { label: "Tax", val: `$${current.tax}`, sub: "/tonne", color: "bg-amber-50 border-amber-200" },
@@ -116,7 +115,6 @@ const CarbonTaxSection = () => {
               ))}
             </div>
 
-            {/* MAS Guidelines */}
             <div className="px-3 mt-auto pb-3">
               <button
                 onClick={(e) => { e.stopPropagation(); setShowMAS(!showMAS); }}
@@ -137,6 +135,13 @@ const CarbonTaxSection = () => {
                 )}
               </AnimatePresence>
             </div>
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center pt-10">
+                <p className="text-[11px] text-gray-400 capitalize">{activeNav} screen</p>
+              </div>
+            )}
+            <PhoneNavBar activeTab={activeNav} onTabChange={setActiveNav} />
           </div>
         </IPhoneMockup>
       </ScrollReveal>
