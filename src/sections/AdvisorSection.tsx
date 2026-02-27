@@ -127,6 +127,13 @@ const AdvisorSection = () => {
                 ))}
               </div>
             )}
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center pt-10">
+                <p className="text-[11px] text-gray-400 capitalize">{activeNav} screen</p>
+              </div>
+            )}
+            <PhoneNavBar activeTab={activeNav} onTabChange={setActiveNav} />
           </div>
         </IPhoneMockup>
       </ScrollReveal>
