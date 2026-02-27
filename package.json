@@ -1,6 +1,7 @@
 {
   "name": "vite_react_shadcn_ts",
   "private": true,
+  "description": "Wealth Compass - Financial Management App",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
