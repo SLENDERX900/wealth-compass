@@ -1,284 +1,283 @@
 
+# Restructure Aurora: All Interactivity Inside the iPhone Mockup
 
-# Aurora — NextGen Sustainable Wealth
-### Immersive Showcase Website · BNP Paribas Singapore Competition
+## Overview
 
-A scroll-driven, cinematic presentation website showcasing the Aurora sustainable wealth management app. **Elegant, institutional-grade** design with Anthropic-inspired aesthetics. **Gradient color transitions** flow throughout — section backgrounds shift between cool cyan and warm gold tones, headlines shimmer with animated gradient fills, and accent elements use smooth color interpolation. **Every section is maximally interactive** — toggleable iPhone mockups, live data controls, real-time preference sliders, and hands-on demos that let the viewer *experience* Aurora, not just read about it.
+Every section currently has interactive controls (FilterToggleGroup, Switch, Slider, buttons) living on the **web page**. The iPhone mockup passively mirrors state. This plan flips the architecture: the website becomes editorial context, and the iPhone mockup becomes the sole interactive demo surface.
 
----
+## Global Changes
 
-## Design System
+### IPhoneMockup Component
+- Keep the structural frame (border, notch, home indicator, expand/collapse) unchanged
+- Set `expandable={true}` default so users can zoom in for better interaction
+- Add `onClick` stopPropagation handling on all interactive elements inside to prevent expand/collapse when tapping controls
 
-- **Font**: Helvetica 1443 (fallback: Helvetica Neue → system sans-serif) via @font-face. Headlines: weight 300-400, generous letter-spacing. Body: weight 400, 16-18px, line-height 1.6-1.7
-- **Gradient Palette**:
-  - Hero gradient: `linear-gradient(135deg, #99FFD6 0%, #FDDC5C 50%, #F4CA3E 100%)` — headline text fills, progress bar
-  - Cyan wash: `rgba(153,255,214,0.06)` vertical gradient — impact/environment sections
-  - Gold wash: `rgba(253,220,92,0.06)` vertical gradient — financial/rewards sections
-  - Border gradients: `linear-gradient(90deg, #99FFD6, #FDDC5C)` on cards and dividers
-  - Scroll-linked ambient gradient shift across the full page (cool top → warm middle → blended close)
-- **Solid Colors**: White `#FFFFFF`, off-white `#FAFAF8`, charcoal `#1A1A1A`, secondary `#8A8A86`
-- **Shadows**: Soft, diffused, color-tinted to match section theme
-- **No backend** — all demo/mock data, purely frontend
-- **Fully responsive** — desktop-first with mobile adaptation
+### FilterToggleGroup — Compact "Phone" Variant
+- Add a `compact` prop that renders at `text-[9px]` with `px-2 py-1` padding and tighter gap
+- Used exclusively inside mockups for segmented controls
 
----
-
-## Animation & Motion System
-
-- **Scroll reveals**: 20-30px fade-up, 600-800ms, cubic-bezier(0.16, 1, 0.3, 1), 100-150ms stagger between children
-- **Scroll progress**: 2px gradient bar (cyan→gold) at viewport top
-- **Gradient headlines**: `background-clip: text` with slowly rotating gradient angle (8s infinite loop)
-- **iPhone mockups**: Subtle gradient glow shadow behind each, idle shadow pulse (4s), hover lifts 2px, toggle expands to 1.15x with frosted gradient backdrop (400ms ease)
-- **Cards**: Gradient border via pseudo-element, slow rotation on hover, 2-3px lift
-- **Buttons**: Gradient background shifts stops on hover (150ms), press feedback
-- **Charts**: Lines draw left-to-right (1.2s), area fills gradient top-to-transparent, bars stagger upward (80ms each)
-- **Score rings**: Conic gradient fill, stroke-dashoffset 1s ease-out
-- **Counters**: RAF count-up with ease-out over 1.5s, tabular-nums, triggered once on scroll entry
-- **Section dividers**: 40px gradient fade bands instead of hard lines
-- **Tier cards**: Diagonal gold light sweep (1.5s, once) on scroll entry
+### General Pattern Per Section
+- **Page side**: `SectionLabel` + `GradientHeadline` + 2-3 sentences of editorial copy + optionally 1-2 read-only stat cards or a summary visualization
+- **Phone side**: ALL toggles, sliders, filters, switches, dropdowns, and interactive data live inside the `IPhoneMockup` children
 
 ---
 
-## Section 1 — Hero & Opening
-Full-viewport hero with radial gradient glow (cyan 8% opacity) behind headline. Monospaced label: `AURORA · SUSTAINABLE WEALTH`. Headline: **"Simple. Powerful. Personalized."** — "Personalized" with animated gradient text fill. Subtitle in secondary gray. iPhone mockup right-of-center with gradient shadow.
+## Section-by-Section Changes
 
-**iPhone Mockup (toggleable)**: Home dashboard with portfolio summary, animated ESG score ring (conic gradient), quick-action buttons.
+### 1. Hero Section
+**Page (left column):**
+- Keep: SectionLabel, GradientHeadline, subtitle paragraph
+- Remove: Both FilterToggleGroups (Light/Dark, Detailed/Compact)
 
-**Live Interactions**:
-- Toggle between **Light / Dark** app theme inside the mockup — the phone's UI switches color scheme in real time
-- Toggle **"Compact View" / "Detailed View"** of the dashboard layout inside the phone
-- Tap quick-action buttons to see animated screen transitions within the mockup
+**Phone (right column):**
+- Add iOS-style segmented control at top for Light/Dark theme toggle
+- Add a segmented control for Detailed/Compact view toggle
+- Keep: Portfolio value, ESG ring, holdings list, bottom tab bar
+- Enrich: Add a mini sparkline chart (simple SVG path) above portfolio value showing 7-day trend
+- Use color: Emerald accent on positive numbers, warm amber on the ESG ring, gradient bottom tab bar active indicator
 
----
+### 2. Impact Section
+**Page:**
+- Keep: SectionLabel, GradientHeadline, subtitle
+- Remove: All three FilterToggleGroups (Personal/Community/Global, time range, format) and the three GradientBorderCard metric tiles
+- Add: 2-3 read-only editorial stat cards (e.g., "12.4 tonnes CO2 saved this year", "87% clean energy") as simple text blocks
 
-## Section 2 — Impact Dashboard
-Cyan wash background gradient. Label: `IMPACT`. Headline: **"Your Impact, Quantified"** — "Quantified" with gradient underline. Three metric tiles with gradient top-border accents and animated counters.
+**Phone:**
+- Move Personal/Community/Global as a segmented control inside phone
+- Move time range (This Month / This Year / All Time) as a segmented control
+- Move format toggle (Numbers / Equivalents) as a small pill toggle
+- Display the three metrics as rich cards inside the phone with icons (leaf for CO2, lightning for energy, droplet for water) using emerald/cyan/blue colors
+- Animated counters triggered on toggle change
 
-**iPhone Mockup (toggleable)**: Impact metrics — CO₂ saved (12.4t), clean energy (87%), water (340kL).
+### 3. Society (Singapore Map)
+**Page:**
+- Keep: SectionLabel, GradientHeadline, subtitle
+- Remove: All FilterToggleGroups (category, Map/List, status filter) and the entire map/list visualization
+- Add: 2-3 highlighted project cards as editorial content (e.g., "Marina Solar Farm — $12.4M funded, powers 2,400 homes")
 
-**Live Interactions**:
-- Toggle between **"Personal Impact" / "Community Impact" / "Global Comparison"** tabs — each switches the counter values and equivalents with smooth crossfade
-- Toggle **"Absolute Numbers" / "Real-World Equivalents"** — switches between "12.4 tonnes CO₂" and "680 trees planted" with animated counter transition
-- Toggle **time range**: "This Month" / "This Year" / "All Time" — counters re-animate to new values
+**Phone:**
+- Replace the abstract SVG blob with a more recognizable Singapore outline SVG with labeled regions (Marina Bay, Tuas, Punggol, Sentosa, Semakau, Jurong) as text labels positioned near the dots
+- Move category filter chips (Clean Energy, Water, Green Buildings, Marine Conservation) inside the phone as compact horizontal scrollable chips
+- Move Map/List toggle as a segmented control inside phone
+- Move status filter inside phone
+- Tapping a dot slides up a project detail card inside the phone with gradient left-border accent
+- Use colored dots: green for Clean Energy, blue for Water, amber for Green Buildings, cyan for Marine Conservation
 
----
+### 4. Carbon Tax
+**Page:**
+- Keep: SectionLabel, GradientHeadline, subtitle
+- Remove: FilterToggleGroups (scenario, profile), MAS button, Slider, timeline, stat cards
+- Add: 3 read-only editorial stat cards showing current trajectory headline numbers
 
-## Section 3 — Impact to Society & Environment
-Background transitions from cyan wash to neutral. Label: `SOCIETY`. Headline: **"Your Money. Real Change."** — "Real Change" in gradient text. Minimal Singapore map with cyan gradient hotspot dots.
+**Phone:**
+- Full carbon tax calculator inside the phone
+- Scenario segmented control (Current / Optimistic / Aggressive)
+- Profile segmented control (Your Portfolio / Average / Benchmark)
+- Year slider with milestone labels
+- Three stat readouts (Tax, Impact, Cost) as colored cards
+- MAS Guidelines toggle as a small button that expands a list inside the phone
+- Timeline visualization as a horizontal gradient bar with year markers
 
-**iPhone Mockup (toggleable)**: Singapore map with tappable project hotspots.
+### 5. Portfolio
+**Page:**
+- Keep: SectionLabel, GradientHeadline
+- Remove: Provider toggle buttons, all FilterToggleGroups, ESG badge toggle, the pie chart, and holdings list
+- Add: Editorial paragraph about aggregation + a large simplified total portfolio value display
 
-**Live Interactions**:
-- Toggle map **filter categories**: "Clean Energy" / "Water" / "Green Buildings" / "Marine Conservation" — dots filter in/out with fade animation
-- Toggle **"Map View" / "List View"** of funded projects
-- Click individual hotspots on the page-level map (not just inside the phone) — each reveals a project info card with gradient left-border accent, sliding up smoothly
-- Toggle **"Funded" / "In Progress" / "Completed"** project status filter
+**Phone:**
+- Provider tab bar at top (compact, scrollable)
+- Grouping segmented control (By Provider / Asset Class / ESG Rating)
+- Mini pie chart rendered inside phone using Recharts with `ResponsiveContainer` at ~100px height
+- Scrollable holdings list below with ESG badge dots
+- Sort toggle and ESG badge toggle as compact controls
+- Use rich colors on pie chart segments
 
----
+### 6. ESG / Greenwashing
+**Page:**
+- Keep: SectionLabel, GradientHeadline
+- Remove: Company dropdown, FilterToggleGroups, layer toggles, Risk/Industry buttons, the entire BarViz card
+- Add: Editorial paragraph about greenwashing methodology + one read-only highlight (e.g., "Average divergence gap: 21 points")
 
-## Section 4 — Why Singapore Needs This
-Background shifts toward warm gold wash. Label: `CONTEXT`. Headline: **"The Rules Are Changing"**. Carbon tax timeline with gradient connecting line (cyan→gold).
+**Phone:**
+- Company picker as a dropdown/select inside phone
+- Layer chips (Claimed / Verified / Projected) as toggleable pills
+- Animated bar visualizations inside phone with color: green for claimed, gold for verified, blue for projected, gray ghost for industry avg
+- Risk badge prominently colored (red/amber/green)
+- Simple/Detailed toggle as segmented control
+- Risk overlay and Industry Average as toggle chips
+- Divergence gap callout card
 
-**iPhone Mockup (toggleable)**: Carbon Tax Calculator with interactive slider.
+### 7. Personas
+**Page:**
+- Keep: SectionLabel, GradientHeadline, persona card grid (these ARE the page-level selection mechanism), experience level toggle
+- These stay on the page because selecting a persona is about choosing "who you are" -- it's editorial context
 
-**Live Interactions**:
-- **Draggable carbon tax timeline slider** on the page itself — drag between 2024-2035, watch tax amount, portfolio impact %, and projected cost animate in real time
-- Toggle **"Your Portfolio" / "Average Singaporean" / "Industry Benchmark"** to compare impact across profiles
-- Toggle **"Optimistic Regulation" / "Current Trajectory" / "Aggressive Regulation"** scenario — timeline milestones and values shift with animated transitions
-- Toggle **"Show MAS Guidelines" overlay** — bullet points fade in alongside the timeline
+**Phone:**
+- Keep: Onboarding flow with swipeable value cards, ESG Identity Card
+- Enhance: Make the onboarding cards more visually rich with colored icons per value (green leaf for Climate, purple people for Diversity, blue shield for Governance, blue droplet for Water, red heart for Human Rights)
+- Add experience level indicator inside phone reflecting page-level selection
 
----
+### 8. Preferences (Biggest Change)
+**Page:**
+- Keep: SectionLabel, GradientHeadline, subtitle
+- Remove: ALL toggle rows, ALL sliders, philosophy selector, excluded holdings list from the page
+- Keep: Large read-only ESG Score Ring + Compatibility/Qualifying stats as a summary panel
 
-## Section 5 — Portfolio Aggregation
-Label: `PORTFOLIO`. Headline: **"All Your Wealth. One View."** — "One View" with gradient underline. Provider logos, Recharts donut with gradient segment fills.
+**Phone:**
+- Full settings screen with ALL controls:
+  - ESG Score Ring at top (smaller, ~56px)
+  - iOS-style toggle rows for Fossil Fuel, Weapons, Tobacco, Animal Testing, Shariah
+  - Compact sliders for Gender Diversity, Carbon Cap, Strictness
+  - Philosophy segmented control (Impact-First / Balanced / Returns-First)
+  - Compatibility % and qualifying count at bottom
+- All changes update the page-level read-only ESG Score Ring in real time (state stays in section component)
 
-**iPhone Mockup (toggleable)**: Tabbed portfolio view with provider tabs.
+### 9. Scenarios (Major Upgrade)
+**Page:**
+- Keep: SectionLabel, GradientHeadline
+- Remove: All FilterToggleGroups, pathway buttons, risk/opportunity/carbon buttons, slider, the large chart
+- Add: Editorial paragraph about climate scenario analysis + a large read-only area chart (keep the existing Recharts chart but make it non-interactive / display-only, driven by phone controls)
 
-**Live Interactions**:
-- **Toggle providers on/off**: Clickable provider logos (Syfe, StashAway, DBS Vickers, Tiger Brokers) — each toggles that provider's holdings in/out of the donut chart, chart animates segment redistribution in real time
-- Toggle **"By Provider" / "By Asset Class" / "By ESG Rating"** chart grouping — donut re-renders with different segment colors and labels
-- Toggle **"Financial Return" / "ESG Score" / "Risk Level"** sort order on the holdings list
-- Toggle **"Show ESG Badges"** on/off — green/amber/red dots appear/disappear next to each holding with fade animation
-- Hover donut segments to see animated tooltip with holding details
+**Phone:**
+- Render a REAL mini Recharts AreaChart inside phone using `ResponsiveContainer` with ~120px fixed height
+- Pathway toggle chips (1.5C / 2C / 3C) as colored pills inside phone
+- Outlook segmented control (Optimistic / Base Case / Pessimistic)
+- Compact time horizon slider inside phone
+- Projected portfolio values displayed below chart as colored stat cards
+- Risk/Opportunity/Carbon Tax toggles as compact chips
+- Nominal/Inflation toggle
+- The page-level chart updates reactively from phone state
 
----
+### 10. Nudges
+**Page:**
+- Keep: SectionLabel, GradientHeadline
+- Remove: FilterToggleGroups (category, urgency), Switch toggles (gradual shift, cost), the entire nudge card stack
+- Add: Editorial paragraph about behavioral finance approach + 1 read-only example nudge as an illustrative card
 
-## Section 6 — ESG Scoring & Greenwashing Detection
-Label: `TRANSPARENCY`. Headline: **"See Through the Noise"** with gradient text. Divergence Gap visualization with gradient-filled bars.
+**Phone:**
+- Category filter chips at top (Regulatory, Performance, ESG Downgrade, Opportunity)
+- Urgency segmented control (All / Important / Critical)
+- Gradual Shift toggle as iOS switch
+- Cost of Inaction toggle as iOS switch
+- Notification card stack inside phone with colored left borders
+- Each card has "Why?", "Dismiss", "Act", "Snooze" actions
+- Dismissed cards animate out
 
-**iPhone Mockup (toggleable)**: Company ESG detail screen with animated bars.
+### 11. Advisor
+**Page:**
+- Keep: SectionLabel, GradientHeadline
+- Remove: FilterToggleGroups (advisor names, tone), credentials button, entire chat card with demo messages
+- Add: Editorial paragraph about advisor model + a simple advisor highlight card (read-only)
 
-**Live Interactions**:
-- **Company selector dropdown** on the page — choose between 5-6 demo companies (e.g., "GreenTech Corp", "PetroGlobal", "CleanWater Inc") — the Divergence Gap bars, risk badge, and analysis text all update with smooth animated transitions
-- Toggle **"Claimed" / "Verified" / "Projected"** score layers — show/hide each bar independently to see the gaps
-- Toggle **"Simple View" / "Detailed Analysis"** — simple shows just the gap, detailed reveals the three-layer breakdown with expandable sections
-- Toggle **"Greenwashing Risk Overlay"** — a color-coded heat overlay fades onto the bars highlighting risk zones
-- Toggle **"Industry Average Comparison"** — a ghost bar fades in showing industry benchmark alongside company scores
+**Phone:**
+- Advisor picker as a horizontal scrollable avatar row at top
+- Chat/Video/Schedule segmented control
+- Tone toggle (Formal / Casual) as a small switch
+- Credentials expandable section
+- Full chat interface with message bubbles and quick-reply options
+- "Request Portfolio Review" button at bottom with gradient styling
 
----
+### 12. Rewards (Clear Tier-to-Service Mapping)
+**Page:**
+- Keep: SectionLabel, GradientHeadline
+- Remove: FilterToggleGroups (view, category), point breakdown button, impact score slider, entire tier card grid
+- Add: Editorial paragraph about reward philosophy + a simple read-only current tier badge
 
-## Section 7 — Who Is This For? (Center Position)
-Background: neutral white with gradient card accents. Label: `FOR YOU`. Headline: **"Built For You"** with gradient text. Three persona cards with gradient top-edge accents.
+**Phone — completely redesigned for clarity:**
+- Current tier badge at top with gradient accent and icon
+- Progress bar to next tier with points label ("42/60 to Impact Leader")
+- Impact score slider inside phone to simulate progression
+- Expandable tier cards with CLEAR mapping:
+  - **Green Explorer (30+ pts)** with green accent:
+    - Priority dining reservations (utensils icon)
+    - Eco-workshop access (leaf icon)
+    - Free ESG portfolio review (chart icon)
+  - **Impact Leader (60+ pts)** with gold accent:
+    - VIP sustainability summits (star icon)
+    - Dedicated relationship manager (user icon)
+    - Social club membership (building icon)
+  - **Legacy Architect (85+ pts)** with premium gold gradient:
+    - Personal concierge service (concierge bell icon)
+    - Private wealth manager (briefcase icon)
+    - Family office advisory (shield icon)
+    - Global restaurant network (globe icon)
+- Each perk has an icon + name + one-line description
+- Category filter chips (Dining / Experiences / Financial Services) inside phone
+- Locked tiers shown dimmed with lock icon; unlocking triggers shimmer animation
 
-**iPhone Mockup (toggleable)**: Onboarding flow with ESG Identity Card.
+### 13. Compliance
+**Page:**
+- Keep: SectionLabel, GradientHeadline
+- Remove: FilterToggleGroups (view mode), audit/disclosure buttons, entire checklist card, privacy controls, audit trail, disclosures
+- Add: Editorial paragraph about MAS compliance + 1-2 read-only trust indicators
 
-**Live Interactions**:
-- **Click to select a persona** (Tech Professional / Family-Office Heir / Conscious Entrepreneur) — the entire section adapts: the phone mockup switches to that persona's tailored dashboard, the pain points and solutions text morphs with crossfade, and the gradient accent color subtly shifts
-- Toggle **"Pain Points" / "Aurora Solution"** on each card — text swaps with smooth fade
-- **Interactive onboarding inside the mockup**: swipe/click through value preference cards (climate, diversity, governance, water, human rights) — each choice updates the ESG Identity Card in real time
-- Toggle **"Beginner" / "Intermediate" / "Expert"** experience level — adjusts the complexity of displayed data and terminology
+**Phone:**
+- Suitability score gauge at top (92%) with gradient arc
+- View mode segmented control (Simplified / Full Legal)
+- MAS checklist with animated checkmarks
+- Privacy toggle rows (Share with Advisor, Analytics, Third-Party)
+- Audit Trail toggle that expands timeline inside phone
+- Conflict Disclosures expandable section
 
----
+### 14. Closing
+**Page:**
+- Keep: SectionLabel, large gradient headline, subtitle, gradient divider line, BNP branding, Replay Journey button
+- Remove: FilterToggleGroups (auto-play, info tabs, language) and the info card
+- Keep the language toggle on the page (it affects the BNP branding text)
 
-## Section 8 — Real-Time Preference Setting
-Cyan wash background. Label: `PREFERENCES`. Headline: **"Your Values. Your Rules."** — "Your Rules" in gradient text.
-
-**iPhone Mockup (toggleable)**: Settings screen with live ESG score.
-
-**Live Interactions — THIS IS THE MOST INTERACTIVE SECTION**:
-- **All controls are live on the page itself (not just in the mockup)**:
-  - Toggle **Fossil Fuel Exclusion**: ON/OFF switch — portfolio score updates instantly
-  - Toggle **Weapons & Defense Exclusion**: ON/OFF switch
-  - Toggle **Tobacco Exclusion**: ON/OFF switch
-  - Toggle **Animal Testing Exclusion**: ON/OFF switch
-  - Slider: **Gender Diversity Threshold** (0-100%) — score ring animates as you drag
-  - Slider: **Carbon Intensity Cap** (low/medium/high) — score updates
-  - Slider: **ESG Strictness Level** (1-10) — the higher, the fewer holdings qualify; a "qualifying holdings" counter updates in real time
-  - Toggle **"Shariah Compliant"**: ON/OFF — additional filter applied
-  - Toggle **"Impact-First" / "Returns-First" / "Balanced"** investment philosophy radio buttons — changes the weighting formula, score recalculates
-- A **live ESG Score Ring** on the page updates in real time with every toggle/slider change — the conic gradient fill smoothly re-animates
-- A **live "Portfolio Compatibility" indicator** shows what % of your current holdings pass the filter — animates as settings change
-- A **"Holdings Affected" list** below shows which mock holdings would be excluded, fading in/out as toggles change
-- The iPhone mockup mirrors all page-level control changes in real time
-
----
-
-## Section 9 — Scenario Analysis
-Label: `PROJECTIONS`. Headline: **"See Your Future"** with gradient underline. Recharts area chart with gradient fills.
-
-**iPhone Mockup (toggleable)**: Dual projection curves with time slider.
-
-**Live Interactions**:
-- **Draggable time horizon slider** on the page (5 / 10 / 15 / 20 / 25 / 30 years) — chart X-axis extends/contracts, projections recalculate with interpolated animation
-- Toggle **scenario pathways**: "1.5°C" / "2°C" / "3°C" — each toggleable independently, showing/hiding that projection line with draw animation
-- Toggle **"Optimistic" / "Base Case" / "Pessimistic"** outlook within each pathway
-- Toggle **"Show Stranded Asset Risk"** — a red-tinted overlay zone appears on the chart highlighting risk periods
-- Toggle **"Show Transition Opportunities"** — green-tinted zones appear showing opportunity windows
-- Toggle **"Include Carbon Tax Impact"** — projections shift based on Section 4's carbon tax trajectory
-- Toggle **"Nominal" / "Inflation-Adjusted"** values — all numbers and chart values recalculate
-
----
-
-## Section 10 — Behavioral Nudges
-Label: `GUIDANCE`. Headline: **"Smart Nudges. Your Pace."** with cyan gradient pill. Nudge cards with gradient left-border accents.
-
-**iPhone Mockup (toggleable)**: Notification-style nudge cards.
-
-**Live Interactions**:
-- Toggle **nudge categories**: "Regulatory" / "Performance" / "ESG Downgrade" / "Opportunity" — filter which nudge cards are visible
-- Toggle **"Gradual Shift Mode"**: ON/OFF — when ON, nudge language softens from "Rebalance now" to "Consider adjusting over the next quarter", all card text morphs with crossfade
-- Toggle **"Show Cost of Inaction"**: ON/OFF — a projected cost number appears on each nudge card with count-up animation
-- Toggle **"Why am I seeing this?"** on each nudge card — expandable explanation section with smooth height animation
-- Toggle **notification urgency level**: "All" / "Important Only" / "Critical Only" — cards filter with staggered fade in/out
-- Click **"Dismiss" / "Act" / "Snooze"** on each card — card animates away (slide out, or collapses with scale-down)
-
----
-
-## Section 11 — Advisor Connection
-Gold wash background. Label: `ADVISORY`. Headline: **"Your Advisor. Always Close."** — "Always Close" with gradient underline. Advisor profile card with rotating gradient border on hover.
-
-**iPhone Mockup (toggleable)**: Chat interface with advisor profile.
-
-**Live Interactions**:
-- Toggle between **multiple advisor profiles** (2-3 demo advisors with different specialties) — card content, chat messages, and credentials morph with crossfade
-- Toggle **"Chat" / "Video Call" / "Schedule Meeting"** tabs in the mockup — each shows a different interface view
-- Toggle **"Show Credentials"**: ON/OFF — credentials section expands/collapses with smooth height animation
-- **Live demo chat**: Click pre-scripted message options to see animated chat bubbles appear with staggered timing (simulating a real conversation flow)
-- Toggle **"Formal" / "Casual"** communication style — the demo chat messages rephrase with crossfade
-
----
-
-## Section 12 — Rewards & Unlock System
-Label: `REWARDS`. Headline: **"Grow Your Impact. Unlock Rewards."** with gradient text. Three tier cards with progressive gradient intensity and diagonal light sweep.
-
-**iPhone Mockup (toggleable)**: Rewards dashboard with progress bar.
-
-**Live Interactions**:
-- **Interactive tier progress slider** on the page — drag to simulate different impact scores and watch tier cards unlock/lock with animations (locked cards are desaturated with a subtle lock icon, unlocking triggers the gold shimmer sweep + full color restoration)
-- Toggle **"Current Perks" / "Next Tier Preview"** — shows what you have vs what you're working toward
-- Toggle individual **reward categories**: "Dining" / "Experiences" / "Financial Services" — filters visible perks within each tier
-- Click each tier card to **expand full perk details** — card expands with smooth height animation showing venue imagery, descriptions, and terms
-- Toggle **"Show Point Breakdown"** — reveals how points are earned (investments, referrals, ESG improvements) with an animated pie chart
-
----
-
-## Section 13 — Compliance & Trust
-Clean white background. Label: `TRUST`. Headline: **"Built for Trust"** with subtle gradient border frame. Audit timeline, compliance checklist, privacy controls.
-
-**iPhone Mockup (toggleable)**: Compliance dashboard with suitability gauge and audit trail.
-
-**Live Interactions**:
-- Toggle **"Simplified" / "Full Legal"** compliance view — switches between plain English explanations and formal regulatory language with crossfade
-- Toggle **privacy controls** (live on the page): "Share with Advisor" / "Anonymous Analytics" / "Third-Party Data" — each is an ON/OFF switch with smooth state transition
-- Toggle **"Show Audit Trail"**: ON/OFF — audit timeline section expands with staggered entry animations for each event
-- Toggle **"Conflict of Interest Disclosures"**: ON/OFF — disclosure section expands with smooth height animation
-- Toggle **"MAS Compliance Checklist"**: items check/uncheck to show which requirements Aurora satisfies, with animated checkmarks
-
----
-
-## Section 14 — Closing & Call to Action
-Full-viewport cinematic close. Aurora logo with radial gradient glow (blended cyan+gold at 10%). **"The Future of Sustainable Wealth."** with gradient text fill. Full-width gradient rule beneath. BNP Paribas branding.
-
-**iPhone Mockup (toggleable)**: App Store preview with auto-advancing carousel.
-
-**Live Interactions**:
-- **Manual carousel control**: Click/swipe through app screenshots (one from each previous section), or toggle **"Auto-play" / "Manual"** mode
-- Toggle **"Key Features" / "User Reviews" / "Technical Specs"** tabs beneath the app preview
-- Toggle **"English" / "中文" / "Bahasa Melayu"** language preview — app screenshots and text swap to show localization
-- A **"Replay Journey"** button that smooth-scrolls back to the top with a cinematic fade transition
-
----
-
-## Interactive Summary — Total Toggleable Features
-
-| Section | Toggle/Interactive Count |
-|---------|------------------------|
-| 1. Hero | 3 (theme, view density, quick actions) |
-| 2. Impact | 3 (tabs, format, time range) |
-| 3. Society | 4 (category filter, view mode, hotspots, status filter) |
-| 4. Carbon Tax | 4 (timeline slider, profile comparison, scenario, MAS overlay) |
-| 5. Portfolio | 5 (provider toggles, chart grouping, sort order, ESG badges, hover) |
-| 6. ESG/Greenwashing | 5 (company selector, layer toggles, view mode, risk overlay, industry comparison) |
-| 7. Personas | 4 (persona selection, pain/solution toggle, onboarding interaction, experience level) |
-| 8. Preferences | 12+ (6 toggles, 3 sliders, philosophy selector, score ring, compatibility, affected list) |
-| 9. Scenarios | 7 (time slider, 3 pathway toggles, outlook, risk/opportunity overlays, carbon tax, nominal/real) |
-| 10. Nudges | 6 (category filter, gradual shift, cost of inaction, explainers, urgency filter, card actions) |
-| 11. Advisor | 5 (advisor profiles, communication tabs, credentials, demo chat, tone toggle) |
-| 12. Rewards | 5 (progress slider, current/next toggle, category filter, card expand, point breakdown) |
-| 13. Compliance | 5 (view mode, privacy controls, audit trail, disclosures, checklist) |
-| 14. Closing | 4 (carousel control, info tabs, language preview, replay) |
-| **Total** | **72+ live interactive elements** |
+**Phone:**
+- App Store preview with Aurora icon, rating, and screenshot carousel
+- Auto-play/Manual toggle inside phone
+- Info tabs (Key Features / Reviews / Specs) as segmented control inside phone
+- Screenshot carousel with dot indicators
+- All info content rendered inside phone
 
 ---
 
-## Shared Components
-- `IPhoneMockup` — Toggleable iPhone 15 Pro frame with gradient glow, 1.15x expand with frosted backdrop
-- `GradientHeadline` — Animated `background-clip: text` gradient fill with slow angle rotation
-- `GradientUnderline` — 1-2px animated gradient underline drawing left-to-right
-- `GradientBorderCard` — Pseudo-element gradient border with optional hover rotation
-- `ScrollReveal` — Intersection Observer fade-up with stagger and configurable easing
-- `SectionLayout` — Alternating gradient wash backgrounds, 120-160px padding, mockup alternation
-- `ESGScoreRing` — Conic gradient fill, animated stroke-dashoffset, responds to live data changes
-- `ImpactCounter` — RAF count-up with ease-out, re-triggerable when values change via toggles
-- `LiveToggle` — Styled ON/OFF switch with smooth thumb slide and gradient track fill transition
-- `LiveSlider` — Draggable slider with gradient track fill, value label, and real-time callback
-- `PersonaCard` — Gradient accent edge, hover lift, content swap on selection
-- `NudgeCard` — Gradient left-border, expandable sections, dismiss/act/snooze actions with exit animations
-- `ScrollProgress` — 2px gradient line (cyan→gold) at viewport top
-- `SectionLabel` — Small monospaced uppercase label above each headline
-- `GradientButton` — Shifting gradient background on hover, press feedback
-- `FilterToggleGroup` — Row of toggle buttons for category filtering with animated active state
-- `TierCard` — Gradient intensity progression, gold shimmer sweep, expand/collapse detail view
-- `CompanySelector` — Dropdown that triggers full-section data swap with animated transitions
-- `TimelineSlider` — Draggable timeline with milestone markers and real-time data binding
+## Technical Approach
 
+### State Management
+- All state remains in the section component (e.g., `HeroSection` owns `appTheme`, `viewMode`)
+- State setters are called from within the phone's JSX via `onClick` with `e.stopPropagation()` to prevent mockup expand/collapse
+- The page-level read-only displays consume the same state
+
+### Compact Controls Inside Phone
+- `FilterToggleGroup` gets a `compact` prop: `text-[9px] px-2 py-1 gap-1`
+- `Switch` used directly at a smaller scale with Tailwind size overrides
+- `Slider` used with custom smaller styling
+- All interactive elements inside phone get `onClick={(e) => e.stopPropagation()}` wrapper
+
+### Recharts Inside Phone
+- For Scenarios: `<ResponsiveContainer width="100%" height={120}>` inside phone div
+- For Portfolio: `<ResponsiveContainer width="100%" height={100}>` for mini pie
+- Reduce font sizes on axes: `tick={{ fontSize: 8 }}`
+- Minimal axis labels, no legends (use colored chips above chart instead)
+
+### Singapore Map
+- Replace the abstract `<svg viewBox="0 0 100 100"><path d="M20,40 Q30,30..."/>` with a more detailed SVG path that shows the actual island shape with recognizable peninsulas
+- Add `<text>` elements at key coordinates for region labels (Marina Bay, Jurong, Tuas, Punggol, Sentosa, Semakau)
+- Colored dots positioned at actual geographic locations with larger click targets inside phone
+- On tap, a detail card slides up from bottom inside phone
+
+### No New Dependencies
+- All implementation uses existing: React, framer-motion, recharts, radix-ui, lucide-react, tailwind
+
+---
+
+## Files to Modify (14 sections + 1 component)
+
+1. `src/components/aurora/FilterToggleGroup.tsx` — add `compact` prop
+2. `src/sections/HeroSection.tsx` — move controls into phone
+3. `src/sections/ImpactSection.tsx` — move controls into phone
+4. `src/sections/SocietySection.tsx` — move controls into phone + better map
+5. `src/sections/CarbonTaxSection.tsx` — move controls into phone
+6. `src/sections/PortfolioSection.tsx` — move controls into phone + mini pie
+7. `src/sections/ESGSection.tsx` — move controls into phone
+8. `src/sections/PersonasSection.tsx` — enhance phone onboarding
+9. `src/sections/PreferencesSection.tsx` — major: all controls into phone
+10. `src/sections/ScenariosSection.tsx` — major: mini chart in phone
+11. `src/sections/NudgesSection.tsx` — move controls into phone
+12. `src/sections/AdvisorSection.tsx` — move controls into phone
+13. `src/sections/RewardsSection.tsx` — major: redesign with clear tier mapping
+14. `src/sections/ComplianceSection.tsx` — move controls into phone
+15. `src/sections/ClosingSection.tsx` — move controls into phone
