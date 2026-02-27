@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Wallet, BarChart2, ArrowRightLeft, Lightbulb, TrendingUp, Search, Plus, Leaf } from "lucide-react";
 import ScrollReveal from "@/components/aurora/ScrollReveal";
 import SectionLabel from "@/components/aurora/SectionLabel";
 import GradientHeadline from "@/components/aurora/GradientHeadline";
@@ -7,7 +6,7 @@ import IPhoneMockup from "@/components/aurora/IPhoneMockup";
 import ESGScoreRing from "@/components/aurora/ESGScoreRing";
 import FilterToggleGroup from "@/components/aurora/FilterToggleGroup";
 
-// Mock data for the interactive Time Range
+// Safe, standard JavaScript object for the interactive Time Range
 const performanceData = {
   "1D": { pct: "+2.4%", abs: "+$6,828", sparkPoints: "0,18 15,16 30,14 45,17 60,12 75,10 90,8 105,11 120,6" },
   "1W": { pct: "+5.1%", abs: "+$13,780", sparkPoints: "0,20 20,18 40,14 60,16 80,10 100,8 120,4" },
@@ -16,16 +15,17 @@ const performanceData = {
   "ALL": { pct: "+42.8%", abs: "+$85,240", sparkPoints: "0,24 20,22 40,16 60,18 80,10 100,4 120,0" }
 };
 
-type TimeRangeKey = keyof typeof performanceData;
-
 const HeroSection = () => {
   const [appTheme, setAppTheme] = useState<"light" | "dark">("light");
   const [viewMode, setViewMode] = useState<"detailed" | "compact">("detailed");
-  const [activeScreen, setActiveScreen] = useState("portfolio");
-  const [timeRange, setTimeRange] = useState<TimeRangeKey>("1D");
+  const [activeScreen, setActiveScreen] = useState("home");
+  // Defaulting to "1D" to match the data keys perfectly
+  const [timeRange, setTimeRange] = useState("1D");
 
   const dark = appTheme === "dark";
-  const currentData = performanceData[timeRange];
+  
+  // Safely fallback to 1D data if something unexpected happens
+  const currentData = performanceData[timeRange as keyof typeof performanceData] || performanceData["1D"];
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
@@ -52,7 +52,7 @@ const HeroSection = () => {
             </ScrollReveal>
             <ScrollReveal delay={0.3}>
               <p className="text-sm text-muted-foreground/70 max-w-md">
-                Tap the phone to explore Aurora's dashboard — navigate tabs, change time horizons, and watch the data react instantly.
+                Tap the phone to explore Aurora's dashboard — toggle themes, switch views, and watch the data react instantly.
               </p>
             </ScrollReveal>
           </div>
@@ -62,7 +62,7 @@ const HeroSection = () => {
             <IPhoneMockup>
               <div className={`h-full flex flex-col transition-colors duration-300 ${dark ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}>
                 
-                {/* Fixed Top Section: Status Bar & Main Chart (Always visible) */}
+                {/* Fixed Top Section: Status Bar & Main Chart */}
                 <div className="pt-10 px-4 pb-2 shrink-0">
                   <div className="flex gap-2 mb-3" onClick={(e) => e.stopPropagation()}>
                     <FilterToggleGroup compact
@@ -80,7 +80,7 @@ const HeroSection = () => {
                     </div>
                     <div className="text-right transition-all">
                       <p className="text-[11px] text-emerald-500 font-medium flex items-center justify-end gap-1">
-                        <TrendingUp size={12} /> {currentData.pct}
+                        <span className="text-[10px]">↑</span> {currentData.pct}
                       </p>
                       <p className="text-[10px] opacity-60">{currentData.abs} {timeRange}</p>
                     </div>
@@ -88,7 +88,7 @@ const HeroSection = () => {
 
                   {/* Interactive Time Range Selector */}
                   <div className="flex justify-between gap-1 mb-3" onClick={(e) => e.stopPropagation()}>
-                    {(Object.keys(performanceData) as TimeRangeKey[]).map((range) => (
+                    {Object.keys(performanceData).map((range) => (
                       <button
                         key={range}
                         onClick={() => setTimeRange(range)}
@@ -129,8 +129,8 @@ const HeroSection = () => {
                 {/* DYNAMIC MIDDLE SECTION: Changes based on Tab Bar */}
                 <div className="flex-1 px-4 overflow-y-auto no-scrollbar pb-2">
                   
-                  {/* View 1: PORTFOLIO (Default) */}
-                  {activeScreen === "portfolio" && (
+                  {/* View 1: HOME/PORTFOLIO (Default) */}
+                  {activeScreen === "home" && (
                     <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                       <div className="flex justify-between items-center mb-1">
                         <span className="text-[10px] font-semibold uppercase opacity-50">Holdings</span>
@@ -183,7 +183,7 @@ const HeroSection = () => {
                   {activeScreen === "invest" && (
                     <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                       <div className={`flex items-center gap-2 p-2 rounded-lg mb-4 ${dark ? 'bg-gray-800' : 'bg-gray-100'}`}>
-                        <Search size={12} className="opacity-50 ml-1" />
+                        <span className="text-[12px] ml-1 opacity-50">🔍</span>
                         <span className="text-[10px] opacity-50">Search funds, themes...</span>
                       </div>
                       <p className="text-[10px] font-semibold uppercase opacity-50 mb-2">Curated Themes</p>
@@ -196,13 +196,6 @@ const HeroSection = () => {
                           <p className="text-[9px] opacity-60 mb-2">Solar, wind, and smart grid tech.</p>
                           <p className="text-[10px] text-emerald-500 font-medium">+12.4% YTD</p>
                         </div>
-                        <div className={`p-3 rounded-xl border ${dark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100 shadow-sm'}`}>
-                          <div className="flex justify-between items-start mb-1">
-                            <p className="text-[11px] font-medium">Sustainable Agriculture</p>
-                          </div>
-                          <p className="text-[9px] opacity-60 mb-2">Food security and water tech.</p>
-                          <p className="text-[10px] text-emerald-500 font-medium">+8.1% YTD</p>
-                        </div>
                       </div>
                     </div>
                   )}
@@ -212,20 +205,13 @@ const HeroSection = () => {
                     <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 flex flex-col h-full justify-center pt-4">
                       <div className="grid grid-cols-2 gap-2 mb-4">
                         <button className="py-4 bg-emerald-500 text-white rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-emerald-600 transition-colors">
-                          <Plus size={18} />
+                          <span className="text-lg">➕</span>
                           <span className="text-[11px] font-medium">Deposit</span>
                         </button>
                         <button className={`py-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-colors ${dark ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'}`}>
-                          <ArrowRightLeft size={18} />
+                          <span className="text-lg">🏦</span>
                           <span className="text-[11px] font-medium">Withdraw</span>
                         </button>
-                      </div>
-                      <div className={`p-3 rounded-xl border ${dark ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-100'}`}>
-                        <p className="text-[9px] uppercase opacity-50 mb-1">Linked Account</p>
-                        <div className="flex justify-between items-center">
-                          <p className="text-[11px] font-medium">DBS Multiplier</p>
-                          <p className="text-[11px] font-mono opacity-70">••• 8192</p>
-                        </div>
                       </div>
                     </div>
                   )}
@@ -237,17 +223,12 @@ const HeroSection = () => {
                       
                       <div className={`p-3 rounded-xl mb-2 flex items-center gap-3 border ${dark ? 'bg-gray-800 border-gray-700' : 'bg-emerald-50/50 border-emerald-100'}`}>
                         <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                          <Leaf className="text-emerald-600" size={14} />
+                          <span className="text-[14px]">🌱</span>
                         </div>
                         <div>
                           <p className="text-[11px] font-semibold text-emerald-600">1.2 Tons CO₂ Offset</p>
                           <p className="text-[9px] opacity-70 mt-0.5">Equivalent to planting 14 trees.</p>
                         </div>
-                      </div>
-
-                      <div className={`p-3 rounded-xl mb-2 flex flex-col gap-1 border ${dark ? 'bg-gray-800 border-gray-700' : 'bg-blue-50/50 border-blue-100'}`}>
-                        <p className="text-[11px] font-semibold text-blue-600">Low Controversy Score</p>
-                        <p className="text-[9px] opacity-70">Your holdings have 80% fewer governance controversies than the benchmark.</p>
                       </div>
                     </div>
                   )}
@@ -257,10 +238,10 @@ const HeroSection = () => {
                 {/* Bottom tab bar - Stays Fixed at the bottom */}
                 <div className="flex gap-1 px-3 pb-4 pt-2 border-t border-gray-200/20 shrink-0">
                   {[
-                    { id: "portfolio", label: "Portfolio", icon: <Wallet size={16} strokeWidth={2} /> },
-                    { id: "invest", label: "Invest", icon: <BarChart2 size={16} strokeWidth={2} /> },
-                    { id: "transfer", label: "Transfer", icon: <ArrowRightLeft size={16} strokeWidth={2} /> },
-                    { id: "insights", label: "Insights", icon: <Lightbulb size={16} strokeWidth={2} /> },
+                    { id: "home", label: "Home", icon: "🏠" },
+                    { id: "invest", label: "Invest", icon: "📈" },
+                    { id: "transfer", label: "Transfer", icon: "↗️" },
+                    { id: "insights", label: "Insights", icon: "💡" },
                   ].map((btn) => (
                     <button
                       key={btn.id}
@@ -274,7 +255,7 @@ const HeroSection = () => {
                         background: "linear-gradient(135deg, hsla(155,100%,80%,0.15), hsla(46,97%,64%,0.1))"
                       } : undefined}
                     >
-                      {btn.icon}
+                      <span className="text-xs">{btn.icon}</span>
                       <span className="text-[9px] font-medium">{btn.label}</span>
                     </button>
                   ))}
