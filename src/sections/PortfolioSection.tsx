@@ -6,6 +6,7 @@ import GradientHeadline from "@/components/aurora/GradientHeadline";
 import SectionLayout from "@/components/aurora/SectionLayout";
 import IPhoneMockup from "@/components/aurora/IPhoneMockup";
 import FilterToggleGroup from "@/components/aurora/FilterToggleGroup";
+import PhoneNavBar from "@/components/aurora/PhoneNavBar";
 
 const holdings = [
   { name: "Tesla Inc", provider: "Syfe", class: "Equities", esg: "A", value: 42000, return: 12.4 },
@@ -24,6 +25,7 @@ const PortfolioSection = () => {
   const [activeProviders, setActiveProviders] = useState<string[]>([...providers]);
   const [groupBy, setGroupBy] = useState("Provider");
   const [showESG, setShowESG] = useState(true);
+  const [activeNav, setActiveNav] = useState("portfolio");
 
   const toggleProvider = (p: string) => {
     setActiveProviders((prev) => prev.includes(p) ? prev.filter((x) => x !== p) : [...prev, p]);
@@ -57,6 +59,8 @@ const PortfolioSection = () => {
       <ScrollReveal delay={0.3} className="flex justify-center">
         <IPhoneMockup>
           <div className="h-full bg-white text-gray-900 flex flex-col">
+            {activeNav === "portfolio" ? (
+              <>
             <div className="pt-10 px-3 pb-1">
               <p className="text-[10px] uppercase tracking-widest opacity-50 text-center mb-2">Portfolio</p>
 
@@ -98,7 +102,7 @@ const PortfolioSection = () => {
             <div className="px-3 mb-1" onClick={(e) => e.stopPropagation()}>
               <button onClick={(e) => { e.stopPropagation(); setShowESG(!showESG); }}
                 className={`text-[8px] px-2 py-0.5 rounded-full border transition-all ${showESG ? "bg-emerald-50 border-emerald-200" : "border-gray-200"}`}>
-                {showESG ? "🟢" : "○"} ESG Badges
+                {showESG ? "ESG On" : "ESG Off"}
               </button>
             </div>
 
@@ -120,6 +124,13 @@ const PortfolioSection = () => {
                 </div>
               ))}
             </div>
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center pt-10">
+                <p className="text-[11px] text-gray-400 capitalize">{activeNav} screen</p>
+              </div>
+            )}
+            <PhoneNavBar activeTab={activeNav} onTabChange={setActiveNav} />
           </div>
         </IPhoneMockup>
       </ScrollReveal>

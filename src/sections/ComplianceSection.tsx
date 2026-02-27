@@ -6,6 +6,7 @@ import GradientHeadline from "@/components/aurora/GradientHeadline";
 import SectionLayout from "@/components/aurora/SectionLayout";
 import IPhoneMockup from "@/components/aurora/IPhoneMockup";
 import FilterToggleGroup from "@/components/aurora/FilterToggleGroup";
+import PhoneNavBar from "@/components/aurora/PhoneNavBar";
 
 const complianceItems = [
   { id: "kyc", label: "KYC/AML Verification", met: true },
@@ -30,6 +31,7 @@ const ComplianceSection = () => {
   const [thirdParty, setThirdParty] = useState(false);
   const [showAudit, setShowAudit] = useState(false);
   const [showDisclosures, setShowDisclosures] = useState(false);
+  const [activeNav, setActiveNav] = useState("portfolio");
 
   const IOSToggle = ({ label, sublabel, checked, onChange }: { label: string; sublabel: string; checked: boolean; onChange: (v: boolean) => void }) => (
     <div className="flex items-center justify-between py-1.5" onClick={(e) => e.stopPropagation()}>
@@ -67,6 +69,8 @@ const ComplianceSection = () => {
       <ScrollReveal delay={0.3} className="flex justify-center">
         <IPhoneMockup>
           <div className="h-full bg-white text-gray-900 flex flex-col overflow-y-auto">
+            {activeNav === "portfolio" ? (
+              <>
             <div className="pt-10 px-3 pb-1">
               <p className="text-[10px] uppercase tracking-widest opacity-50 text-center mb-2">Compliance</p>
 
