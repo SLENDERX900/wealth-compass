@@ -55,12 +55,12 @@ const HeroSection = () => {
                   <div className="flex gap-2 mb-4" onClick={(e) => e.stopPropagation()}>
                     <FilterToggleGroup 
                       options={["Light", "Dark"]}
-                      selected={appTheme === "light" ? "Light" : "Dark"}
+                      selected={appTheme === "light"? "Light": "Dark"}
                       onChange={(v) => setAppTheme(v === "Light" ? "light" : "dark")}
                     />
                     <FilterToggleGroup 
                       options={["Detailed", "Compact"]}
-                      selected={viewMode === "detailed" ? "Detailed" : "Compact"}
+                      selected={viewMode === "detailed"? "Detailed": "Compact"}
                       onChange={(v) => setViewMode(v === "Detailed" ? "detailed" : "compact")}
                     />
                   </div>
