@@ -53,12 +53,12 @@ const HeroSection = () => {
                 {/* Status bar & Top Toggles */}
                 <div className="pt-10 px-4 pb-2">
                   <div className="flex gap-2 mb-4" onClick={(e) => e.stopPropagation()}>
-                    <FilterToggleGroup compact
+                    <FilterToggleGroup 
                       options={["Light", "Dark"]}
                       selected={appTheme === "light" ? "Light" : "Dark"}
                       onChange={(v) => setAppTheme(v === "Light" ? "light" : "dark")}
                     />
-                    <FilterToggleGroup compact
+                    <FilterToggleGroup 
                       options={["Detailed", "Compact"]}
                       selected={viewMode === "detailed" ? "Detailed" : "Compact"}
                       onChange={(v) => setViewMode(v === "Detailed" ? "detailed" : "compact")}
