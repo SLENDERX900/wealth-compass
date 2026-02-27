@@ -6,16 +6,15 @@ import GradientHeadline from "@/components/aurora/GradientHeadline";
 import SectionLayout from "@/components/aurora/SectionLayout";
 import IPhoneMockup from "@/components/aurora/IPhoneMockup";
 import FilterToggleGroup from "@/components/aurora/FilterToggleGroup";
-import ImpactCounter from "@/components/aurora/ImpactCounter";
-import { Switch } from "@/components/ui/switch";
 
 const nudges = [
-  { id: 1, category: "Regulatory", urgency: "Critical", title: "Carbon Tax Increase — Q3 2026", body: "Rebalance now", softBody: "Consider adjusting over the next quarter", cost: 2400, why: "Singapore MAS announced carbon tax rising to $45/tonne. Your portfolio has 12% exposure to high-carbon assets." },
-  { id: 2, category: "Performance", urgency: "Important", title: "CleanTech Fund +18% YTD", body: "Increase allocation", softBody: "Review your allocation when convenient", cost: 0, why: "Your CleanTech Fund is outperforming benchmark by 6.2%. Similar funds show continued momentum." },
-  { id: 3, category: "ESG Downgrade", urgency: "Critical", title: "PetroGlobal ESG Downgrade", body: "Exit position immediately", softBody: "Plan to reduce exposure gradually", cost: 3100, why: "Independent audit revealed 34-point divergence between claimed and verified ESG scores." },
-  { id: 4, category: "Opportunity", urgency: "Important", title: "New Green Bond Issue — SG Govt", body: "Allocate 5% portfolio", softBody: "Worth exploring when ready", cost: 0, why: "Singapore government issuing AAA-rated green bonds at 3.8% yield. Aligns with your climate-first preferences." },
-  { id: 5, category: "Performance", urgency: "All", title: "Portfolio Rebalancing Due", body: "Review allocations", softBody: "Schedule a review at your convenience", cost: 800, why: "Quarterly rebalancing helps maintain target allocation. Current drift: 4.2% from targets." },
+  { id: 1, category: "Regulatory", urgency: "Critical", title: "Carbon Tax Increase — Q3 2026", body: "Rebalance now", softBody: "Consider adjusting next quarter", cost: 2400, why: "MAS announced carbon tax rising to $45/tonne. 12% exposure to high-carbon assets." },
+  { id: 2, category: "Performance", urgency: "Important", title: "CleanTech Fund +18% YTD", body: "Increase allocation", softBody: "Review when convenient", cost: 0, why: "CleanTech Fund outperforming benchmark by 6.2%." },
+  { id: 3, category: "ESG Downgrade", urgency: "Critical", title: "PetroGlobal ESG Downgrade", body: "Exit position", softBody: "Plan to reduce exposure", cost: 3100, why: "34-point divergence between claimed and verified ESG scores." },
+  { id: 4, category: "Opportunity", urgency: "Important", title: "SG Green Bond Issue", body: "Allocate 5%", softBody: "Worth exploring", cost: 0, why: "AAA-rated green bonds at 3.8% yield. Aligns with climate-first preferences." },
 ];
+
+const catColors: Record<string, string> = { Regulatory: "#f59e0b", Performance: "#22c55e", "ESG Downgrade": "#ef4444", Opportunity: "#3b82f6" };
 
 const NudgesSection = () => {
   const [categories, setCategories] = useState<string[]>(["Regulatory", "Performance", "ESG Downgrade", "Opportunity"]);
@@ -25,16 +24,12 @@ const NudgesSection = () => {
   const [expandedWhy, setExpandedWhy] = useState<number[]>([]);
   const [dismissed, setDismissed] = useState<number[]>([]);
 
-  const toggleCategory = (cat: string) => {
-    setCategories((prev) => prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]);
-  };
+  const toggleCategory = (cat: string) => setCategories((p) => p.includes(cat) ? p.filter((c) => c !== cat) : [...p, cat]);
 
   const filtered = nudges.filter(
     (n) => categories.includes(n.category) && !dismissed.includes(n.id) &&
-      (urgency === "All" || (urgency === "Important Only" ? n.urgency !== "All" : n.urgency === "Critical"))
+      (urgency === "All" || (urgency === "Important" ? n.urgency !== "All" : n.urgency === "Critical"))
   );
-
-  const borderColor = (cat: string) => cat === "Regulatory" || cat === "ESG Downgrade" ? "hsl(46 97% 64%)" : "hsl(155 100% 80%)";
 
   return (
     <SectionLayout id="guidance">
@@ -42,78 +37,90 @@ const NudgesSection = () => {
       <ScrollReveal delay={0.1}>
         <GradientHeadline className="mb-4">Smart Nudges. Your Pace.</GradientHeadline>
       </ScrollReveal>
+      <ScrollReveal delay={0.15}>
+        <p className="text-muted-foreground mb-6 max-w-lg">Aurora uses behavioral finance principles to guide you toward better outcomes — never pushing, always explaining.</p>
+      </ScrollReveal>
 
+      {/* Example editorial nudge */}
       <ScrollReveal delay={0.2}>
-        <div className="flex flex-wrap gap-4 mb-4">
-          <FilterToggleGroup options={["Regulatory", "Performance", "ESG Downgrade", "Opportunity"]} selected={categories} onChange={toggleCategory} multi />
-          <FilterToggleGroup options={["All", "Important Only", "Critical Only"]} selected={urgency} onChange={setUrgency} />
-        </div>
-        <div className="flex gap-6 mb-8">
-          <div className="flex items-center gap-2"><span className="text-sm">Gradual Shift</span><Switch checked={gradualShift} onCheckedChange={setGradualShift} /></div>
-          <div className="flex items-center gap-2"><span className="text-sm">Cost of Inaction</span><Switch checked={showCost} onCheckedChange={setShowCost} /></div>
+        <div className="bg-card rounded-xl border border-border p-4 border-l-[3px] max-w-md mb-12" style={{ borderLeftColor: "#f59e0b" }}>
+          <p className="text-sm font-medium">Carbon Tax Increase — Q3 2026</p>
+          <p className="text-xs text-muted-foreground mt-1">Nudges adapt to your pace and communication style.</p>
         </div>
       </ScrollReveal>
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-3">
-          <AnimatePresence>
-            {filtered.map((n, i) => (
-              <motion.div key={n.id} className="bg-card rounded-xl border border-border p-4 border-l-[3px]"
-                style={{ borderLeftColor: borderColor(n.category) }}
-                initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20, height: 0 }}
-                transition={{ delay: i * 0.08 }} layout>
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="text-sm font-medium">{n.title}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{gradualShift ? n.softBody : n.body}</p>
-                  </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary">{n.category}</span>
-                </div>
+      <ScrollReveal delay={0.3} className="flex justify-center">
+        <IPhoneMockup>
+          <div className="h-full bg-white text-gray-900 flex flex-col">
+            <div className="pt-10 px-3 pb-1">
+              <p className="text-[10px] uppercase tracking-widest opacity-50 text-center mb-2">Notifications</p>
 
-                {showCost && n.cost > 0 && (
-                  <div className="text-xs mt-2">
-                    Cost of inaction: <span className="text-destructive font-medium">$<ImpactCounter value={n.cost} /></span>/yr
-                  </div>
-                )}
-
-                <AnimatePresence>
-                  {expandedWhy.includes(n.id) && (
-                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                      <p className="text-xs text-muted-foreground mt-2 pt-2 border-t border-border">{n.why}</p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <div className="flex gap-2 mt-3">
-                  <button onClick={() => setExpandedWhy((prev) => prev.includes(n.id) ? prev.filter((x) => x !== n.id) : [...prev, n.id])}
-                    className="text-[10px] text-muted-foreground hover:text-foreground transition-colors">
-                    {expandedWhy.includes(n.id) ? "Hide details" : "Why this?"}
+              {/* Category chips */}
+              <div className="flex gap-0.5 overflow-x-auto pb-1" onClick={(e) => e.stopPropagation()}>
+                {["Regulatory", "Performance", "ESG Downgrade", "Opportunity"].map((cat) => (
+                  <button key={cat} onClick={(e) => { e.stopPropagation(); toggleCategory(cat); }}
+                    className={`flex-shrink-0 text-[8px] px-1.5 py-0.5 rounded-full border transition-all flex items-center gap-0.5 ${
+                      categories.includes(cat) ? "border-gray-300 bg-gray-50" : "border-gray-200 opacity-40"
+                    }`}>
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: catColors[cat] }} />
+                    {cat.split(" ")[0]}
                   </button>
-                  <button onClick={() => setDismissed((prev) => [...prev, n.id])} className="text-[10px] text-muted-foreground hover:text-foreground">Dismiss</button>
-                  <button className="text-[10px] text-aurora-cyan hover:underline">Act</button>
-                  <button className="text-[10px] text-muted-foreground hover:text-foreground">Snooze</button>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-
-        <ScrollReveal delay={0.3} className="flex justify-center">
-          <IPhoneMockup>
-            <div className="h-full p-4 bg-white text-gray-900 flex flex-col gap-2">
-              <p className="pt-8 text-[10px] uppercase tracking-widest opacity-50 text-center">Notifications</p>
-              <div className="flex-1 space-y-2 mt-2 overflow-hidden">
-                {filtered.slice(0, 3).map((n) => (
-                  <div key={n.id} className="bg-gray-50 rounded-lg p-2 border-l-2" style={{ borderLeftColor: borderColor(n.category) }}>
-                    <p className="text-[10px] font-medium">{n.title}</p>
-                    <p className="text-[9px] text-gray-400 mt-0.5">{gradualShift ? n.softBody : n.body}</p>
-                  </div>
                 ))}
               </div>
+
+              {/* Urgency + toggles */}
+              <div className="flex gap-1 mt-1 items-center" onClick={(e) => e.stopPropagation()}>
+                <FilterToggleGroup compact options={["All", "Important", "Critical"]} selected={urgency} onChange={setUrgency} />
+              </div>
+
+              <div className="flex gap-2 mt-1" onClick={(e) => e.stopPropagation()}>
+                <button onClick={(e) => { e.stopPropagation(); setGradualShift(!gradualShift); }}
+                  className={`text-[8px] px-2 py-0.5 rounded-full border ${gradualShift ? "bg-blue-50 border-blue-200" : "border-gray-200"}`}>
+                  {gradualShift ? "🐢 Gradual" : "⚡ Direct"}
+                </button>
+                <button onClick={(e) => { e.stopPropagation(); setShowCost(!showCost); }}
+                  className={`text-[8px] px-2 py-0.5 rounded-full border ${showCost ? "bg-red-50 border-red-200" : "border-gray-200"}`}>
+                  💰 Cost
+                </button>
+              </div>
             </div>
-          </IPhoneMockup>
-        </ScrollReveal>
-      </div>
+
+            {/* Nudge cards */}
+            <div className="flex-1 px-3 pb-3 mt-2 space-y-1.5 overflow-y-auto">
+              <AnimatePresence>
+                {filtered.map((n) => (
+                  <motion.div key={n.id} className="bg-gray-50 rounded-xl p-2.5 border-l-[3px]"
+                    style={{ borderLeftColor: catColors[n.category] }}
+                    initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20, height: 0 }} layout>
+                    <p className="text-[10px] font-medium">{n.title}</p>
+                    <p className="text-[9px] text-gray-500 mt-0.5">{gradualShift ? n.softBody : n.body}</p>
+
+                    {showCost && n.cost > 0 && (
+                      <p className="text-[9px] text-red-500 mt-0.5">⚠️ ${n.cost.toLocaleString()}/yr inaction cost</p>
+                    )}
+
+                    <AnimatePresence>
+                      {expandedWhy.includes(n.id) && (
+                        <motion.p initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+                          className="text-[8px] text-gray-400 mt-1 overflow-hidden">{n.why}</motion.p>
+                      )}
+                    </AnimatePresence>
+
+                    <div className="flex gap-1.5 mt-1.5" onClick={(e) => e.stopPropagation()}>
+                      <button onClick={(e) => { e.stopPropagation(); setExpandedWhy((p) => p.includes(n.id) ? p.filter((x) => x !== n.id) : [...p, n.id]); }}
+                        className="text-[8px] text-gray-400">Why?</button>
+                      <button onClick={(e) => { e.stopPropagation(); setDismissed((p) => [...p, n.id]); }}
+                        className="text-[8px] text-gray-400">Dismiss</button>
+                      <button className="text-[8px] text-emerald-500 font-medium">Act</button>
+                      <button className="text-[8px] text-gray-400">Snooze</button>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          </div>
+        </IPhoneMockup>
+      </ScrollReveal>
     </SectionLayout>
   );
 };

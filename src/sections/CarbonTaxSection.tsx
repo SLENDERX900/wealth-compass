@@ -10,7 +10,7 @@ import ImpactCounter from "@/components/aurora/ImpactCounter";
 import { Slider } from "@/components/ui/slider";
 
 const taxData: Record<string, { milestones: { year: number; tax: number; impact: number; cost: number }[] }> = {
-  "Current Trajectory": {
+  Current: {
     milestones: [
       { year: 2024, tax: 25, impact: 2.1, cost: 840 },
       { year: 2026, tax: 45, impact: 3.8, cost: 1520 },
@@ -19,7 +19,7 @@ const taxData: Record<string, { milestones: { year: number; tax: number; impact:
       { year: 2035, tax: 80, impact: 6.7, cost: 2680 },
     ],
   },
-  "Optimistic Regulation": {
+  Optimistic: {
     milestones: [
       { year: 2024, tax: 25, impact: 2.1, cost: 840 },
       { year: 2026, tax: 35, impact: 2.9, cost: 1160 },
@@ -28,7 +28,7 @@ const taxData: Record<string, { milestones: { year: number; tax: number; impact:
       { year: 2035, tax: 55, impact: 4.6, cost: 1840 },
     ],
   },
-  "Aggressive Regulation": {
+  Aggressive: {
     milestones: [
       { year: 2024, tax: 25, impact: 2.1, cost: 840 },
       { year: 2026, tax: 60, impact: 5.0, cost: 2000 },
@@ -39,19 +39,19 @@ const taxData: Record<string, { milestones: { year: number; tax: number; impact:
   },
 };
 
-const profiles = { "Your Portfolio": 1, "Average Singaporean": 1.3, "Industry Benchmark": 0.8 };
+const profiles = { "You": 1, "Average": 1.3, "Industry": 0.8 };
 
 const masGuidelines = [
-  "Environmental Risk Management Guidelines (2020)",
-  "Taxonomy for Sustainable Finance (2023)",
-  "Climate-related Financial Disclosures (2025)",
-  "Mandatory ESG Fund Labeling (2026)",
+  "Environmental Risk Management (2020)",
+  "Sustainable Finance Taxonomy (2023)",
+  "Climate-related Disclosures (2025)",
+  "Mandatory ESG Labeling (2026)",
 ];
 
 const CarbonTaxSection = () => {
   const [yearIndex, setYearIndex] = useState([1]);
-  const [scenario, setScenario] = useState("Current Trajectory");
-  const [profile, setProfile] = useState("Your Portfolio");
+  const [scenario, setScenario] = useState("Current");
+  const [profile, setProfile] = useState("You");
   const [showMAS, setShowMAS] = useState(false);
 
   const scenarioData = taxData[scenario];
@@ -65,89 +65,81 @@ const CarbonTaxSection = () => {
         <GradientHeadline className="mb-4">The Rules Are Changing</GradientHeadline>
       </ScrollReveal>
       <ScrollReveal delay={0.15}>
-        <p className="text-muted-foreground mb-8 max-w-lg">Singapore's carbon tax is rising. Understanding the trajectory is essential for future-proof investing.</p>
+        <p className="text-muted-foreground mb-6 max-w-lg">Singapore's carbon tax is rising. Understanding the trajectory is essential for future-proof investing.</p>
       </ScrollReveal>
 
+      {/* Read-only editorial stats */}
       <ScrollReveal delay={0.2}>
-        <div className="flex flex-wrap gap-4 mb-8">
-          <FilterToggleGroup options={Object.keys(taxData)} selected={scenario} onChange={setScenario} />
-          <FilterToggleGroup options={Object.keys(profiles)} selected={profile} onChange={setProfile} />
-          <button
-            className={`px-4 py-1.5 rounded-full text-sm transition-all ${showMAS ? "bg-aurora-gold/20 text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-            onClick={() => setShowMAS(!showMAS)}
-          >
-            {showMAS ? "Hide" : "Show"} MAS Guidelines
-          </button>
+        <div className="grid grid-cols-3 gap-4 mb-12 max-w-lg">
+          {[["$25→$80/t", "Tax trajectory"], ["6.7%", "Max impact"], ["$2,680/yr", "Projected cost"]].map(([val, label]) => (
+            <div key={label} className="text-center">
+              <p className="text-lg font-light text-foreground">{val}</p>
+              <p className="text-[10px] text-muted-foreground">{label}</p>
+            </div>
+          ))}
         </div>
       </ScrollReveal>
 
-      <div className="grid lg:grid-cols-2 gap-12 items-start">
-        <ScrollReveal delay={0.25}>
-          <div className="space-y-8">
-            {/* Timeline */}
-            <div className="relative">
-              <div className="h-1 rounded-full mb-6" style={{ background: "linear-gradient(90deg, hsl(155 100% 80%), hsl(46 97% 64%))" }} />
-              <div className="flex justify-between text-xs text-muted-foreground mb-4">
-                {scenarioData.milestones.map((m) => (
-                  <span key={m.year} className="tabular-nums">{m.year}</span>
-                ))}
+      <ScrollReveal delay={0.3} className="flex justify-center">
+        <IPhoneMockup>
+          <div className="h-full bg-white text-gray-900 flex flex-col">
+            <div className="pt-10 px-3 pb-1">
+              <p className="text-[10px] uppercase tracking-widest opacity-50 text-center mb-2">Carbon Tax Calculator</p>
+
+              {/* Scenario */}
+              <FilterToggleGroup compact options={["Current", "Optimistic", "Aggressive"]} selected={scenario} onChange={setScenario} className="justify-center mb-1" />
+              {/* Profile */}
+              <FilterToggleGroup compact options={["You", "Average", "Industry"]} selected={profile} onChange={setProfile} className="justify-center mb-2" />
+            </div>
+
+            {/* Timeline bar + slider */}
+            <div className="px-3 mb-2" onClick={(e) => e.stopPropagation()}>
+              <div className="h-1 rounded-full mb-1" style={{ background: "linear-gradient(90deg, hsl(155 100% 80%), hsl(46 97% 64%))" }} />
+              <div className="flex justify-between text-[8px] text-gray-400 mb-1">
+                {scenarioData.milestones.map((m) => <span key={m.year}>{m.year}</span>)}
               </div>
-              <Slider value={yearIndex} onValueChange={setYearIndex} min={0} max={scenarioData.milestones.length - 1} step={1} />
+              <Slider value={yearIndex} onValueChange={setYearIndex} min={0} max={scenarioData.milestones.length - 1} step={1} className="w-full" />
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-card rounded-xl p-4 border border-border">
-                <p className="text-xs text-muted-foreground mb-1">Carbon Tax</p>
-                <p className="text-2xl font-light">$<ImpactCounter value={current.tax} /></p>
-                <p className="text-xs text-muted-foreground">/tonne</p>
-              </div>
-              <div className="bg-card rounded-xl p-4 border border-border">
-                <p className="text-xs text-muted-foreground mb-1">Portfolio Impact</p>
-                <p className="text-2xl font-light"><ImpactCounter value={current.impact * multiplier} decimals={1} suffix="%" /></p>
-              </div>
-              <div className="bg-card rounded-xl p-4 border border-border">
-                <p className="text-xs text-muted-foreground mb-1">Annual Cost</p>
-                <p className="text-2xl font-light">$<ImpactCounter value={Math.round(current.cost * multiplier)} /></p>
-              </div>
+            <div className="px-3 grid grid-cols-3 gap-1.5 mb-2">
+              {[
+                { label: "Tax", val: `$${current.tax}`, sub: "/tonne", color: "bg-amber-50 border-amber-200" },
+                { label: "Impact", val: `${(current.impact * multiplier).toFixed(1)}%`, sub: "portfolio", color: "bg-red-50 border-red-200" },
+                { label: "Cost", val: `$${Math.round(current.cost * multiplier)}`, sub: "/year", color: "bg-orange-50 border-orange-200" },
+              ].map((s) => (
+                <div key={s.label} className={`rounded-xl p-2 border text-center ${s.color}`}>
+                  <p className="text-[8px] text-gray-500 uppercase">{s.label}</p>
+                  <p className="text-sm font-medium">{s.val}</p>
+                  <p className="text-[8px] text-gray-400">{s.sub}</p>
+                </div>
+              ))}
             </div>
 
-            {/* MAS Guidelines overlay */}
-            <AnimatePresence>
-              {showMAS && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
-                  <div className="bg-card rounded-xl p-4 border border-border space-y-2">
-                    <p className="text-sm font-medium mb-2">MAS Sustainability Guidelines</p>
+            {/* MAS Guidelines */}
+            <div className="px-3 mt-auto pb-3">
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowMAS(!showMAS); }}
+                className={`w-full text-[9px] py-1.5 rounded-lg transition-all border ${showMAS ? "bg-amber-50 border-amber-200 text-gray-700" : "bg-gray-50 border-gray-200 text-gray-500"}`}
+              >
+                {showMAS ? "Hide" : "Show"} MAS Guidelines
+              </button>
+              <AnimatePresence>
+                {showMAS && (
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden mt-1">
                     {masGuidelines.map((g, i) => (
-                      <motion.p key={g} className="text-xs text-muted-foreground flex items-center gap-2" initial={{ x: -10, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.1 }}>
-                        <span className="w-1.5 h-1.5 rounded-full bg-aurora-gold" /> {g}
+                      <motion.p key={g} className="text-[9px] text-gray-500 py-0.5 flex items-center gap-1"
+                        initial={{ x: -5, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.05 }}>
+                        <span className="w-1 h-1 rounded-full bg-amber-400 shrink-0" /> {g}
                       </motion.p>
                     ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </ScrollReveal>
-
-        <ScrollReveal delay={0.35} className="flex justify-center">
-          <IPhoneMockup>
-            <div className="h-full p-4 bg-white text-gray-900 flex flex-col gap-3">
-              <p className="pt-8 text-[10px] uppercase tracking-widest opacity-50 text-center">Carbon Tax Calculator</p>
-              <div className="bg-gray-50 rounded-lg p-3 text-center">
-                <p className="text-2xl font-light">${current.tax}/t</p>
-                <p className="text-[10px] text-gray-500">{current.year} · {scenario}</p>
-              </div>
-              <div className="mt-auto bg-gray-50 rounded-lg p-3">
-                <p className="text-[10px] text-gray-500">Portfolio Exposure</p>
-                <div className="h-2 bg-gray-200 rounded-full mt-2 overflow-hidden">
-                  <motion.div className="h-full rounded-full" style={{ background: "linear-gradient(90deg, hsl(155 100% 80%), hsl(46 97% 64%))" }} animate={{ width: `${current.impact * multiplier * 8}%` }} />
-                </div>
-              </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          </IPhoneMockup>
-        </ScrollReveal>
-      </div>
+          </div>
+        </IPhoneMockup>
+      </ScrollReveal>
     </SectionLayout>
   );
 };
