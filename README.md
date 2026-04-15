@@ -2,7 +2,7 @@
 
 A marketing website showcasing **Aurora** — a next-generation sustainable wealth management app designed for Singapore's next generation of investors.
 
-**Live Demo**: [https://wealth-compass-demo.vercel.app](https://wealth-compass-demo.vercel.app)
+**Live Demo**: [https://wealth-compass-lime.vercel.app](https://wealth-compass-lime.vercel.app)
 
 ---
 
