@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <linearGradient id="aurora-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <linearGradient id="aurora-inner" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6ee7b7" />
+      <stop offset="100%" stop-color="#fcd34d" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer circle -->
+  <circle cx="60" cy="60" r="56" stroke="url(#aurora-gradient)" stroke-width="4" fill="none"/>
+  
+  <!-- Compass needle / A shape -->
+  <path d="M60 20 L85 75 L75 75 L60 40 L45 75 L35 75 Z" fill="url(#aurora-gradient)"/>
+  
+  <!-- Inner circle accent -->
+  <circle cx="60" cy="60" r="20" fill="url(#aurora-inner)" opacity="0.3"/>
+  
+  <!-- Center dot -->
+  <circle cx="60" cy="60" r="6" fill="url(#aurora-gradient)"/>
+</svg>
