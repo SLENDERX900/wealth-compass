@@ -8,6 +8,7 @@ import IPhoneMockup from "@/components/aurora/IPhoneMockup";
 import FilterToggleGroup from "@/components/aurora/FilterToggleGroup";
 import GradientBorderCard from "@/components/aurora/GradientBorderCard";
 import ESGScoreRing from "@/components/aurora/ESGScoreRing";
+import PhoneNavBar from "@/components/aurora/PhoneNavBar";
 
 const personas = [
   { id: "tech", title: "The Tech Professional", pain: "Overwhelmed by fragmented platforms. No time for ESG research. Skeptical of greenwashing.", solution: "Aurora aggregates all accounts, automates ESG screening, and provides verified scores.", score: 82, values: ["Climate Action", "Innovation", "Governance"] },
@@ -35,6 +36,7 @@ const PersonasSection = () => {
   const [expLevel, setExpLevel] = useState("Beginner");
   const [onboardingStep, setOnboardingStep] = useState(0);
   const [selectedValues, setSelectedValues] = useState<string[]>(["Climate"]);
+  const [activeNav, setActiveNav] = useState("portfolio");
 
   const getCardView = (id: string) => cardView[id] || "pain";
   const toggleCardView = (id: string) => setCardView((p) => ({ ...p, [id]: p[id] === "solution" ? "pain" : "solution" }));
@@ -80,6 +82,8 @@ const PersonasSection = () => {
       <ScrollReveal delay={0.4} className="flex justify-center">
         <IPhoneMockup>
           <div className="h-full bg-white text-gray-900 flex flex-col">
+            {activeNav === "portfolio" ? (
+              <>
             <div className="pt-10 px-3">
               <p className="text-[10px] uppercase tracking-widest opacity-50 text-center mb-1">Onboarding</p>
               <p className="text-[11px] font-medium text-center mb-1">{selected.title}</p>
@@ -127,6 +131,13 @@ const PersonasSection = () => {
                 </div>
               </div>
             </div>
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center pt-10">
+                <p className="text-[11px] text-gray-400 capitalize">{activeNav} screen</p>
+              </div>
+            )}
+            <PhoneNavBar activeTab={activeNav} onTabChange={setActiveNav} />
           </div>
         </IPhoneMockup>
       </ScrollReveal>

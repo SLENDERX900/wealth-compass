@@ -8,6 +8,7 @@ import IPhoneMockup from "@/components/aurora/IPhoneMockup";
 import ESGScoreRing from "@/components/aurora/ESGScoreRing";
 import FilterToggleGroup from "@/components/aurora/FilterToggleGroup";
 import { Slider } from "@/components/ui/slider";
+import PhoneNavBar from "@/components/aurora/PhoneNavBar";
 
 const mockHoldings = [
   { name: "ExxonMobil", tags: ["fossil"], esg: 32 },
@@ -32,6 +33,7 @@ const PreferencesSection = () => {
   const [carbonCap, setCarbonCap] = useState([1]);
   const [strictness, setStrictness] = useState([5]);
   const [philosophy, setPhilosophy] = useState("Balanced");
+  const [activeNav, setActiveNav] = useState("portfolio");
 
   const { score, compatibility, excluded } = useMemo(() => {
     let base = 72;
@@ -89,6 +91,8 @@ const PreferencesSection = () => {
       <ScrollReveal delay={0.3} className="flex justify-center">
         <IPhoneMockup>
           <div className="h-full bg-white text-gray-900 flex flex-col overflow-y-auto">
+            {activeNav === "portfolio" ? (
+              <>
             <div className="pt-10 px-3 pb-1">
               <p className="text-[10px] uppercase tracking-widest opacity-50 text-center mb-2">Preferences</p>
               <div className="flex justify-center mb-2">
@@ -140,6 +144,13 @@ const PreferencesSection = () => {
                 <p className="text-sm font-medium text-amber-600">{mockHoldings.length - excluded.length}/{mockHoldings.length}</p>
               </div>
             </div>
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center pt-10">
+                <p className="text-[11px] text-gray-400 capitalize">{activeNav} screen</p>
+              </div>
+            )}
+            <PhoneNavBar activeTab={activeNav} onTabChange={setActiveNav} />
           </div>
         </IPhoneMockup>
       </ScrollReveal>

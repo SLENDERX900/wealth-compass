@@ -6,6 +6,7 @@ import GradientHeadline from "@/components/aurora/GradientHeadline";
 import SectionLayout from "@/components/aurora/SectionLayout";
 import IPhoneMockup from "@/components/aurora/IPhoneMockup";
 import FilterToggleGroup from "@/components/aurora/FilterToggleGroup";
+import PhoneNavBar from "@/components/aurora/PhoneNavBar";
 
 const companies = [
   { name: "GreenTech Corp", claimed: 82, verified: 61, projected: 70, risk: "Moderate", industry: 65, analysis: "Marketing claims exceed verified metrics by 21 points. Carbon offset quality questioned." },
@@ -24,6 +25,7 @@ const ESGSection = () => {
   const [viewMode, setViewMode] = useState("Simple");
   const [showRisk, setShowRisk] = useState(false);
   const [showIndustry, setShowIndustry] = useState(false);
+  const [activeNav, setActiveNav] = useState("portfolio");
 
   const toggleLayer = (l: "claimed" | "verified" | "projected") => setLayers((p) => ({ ...p, [l]: !p[l] }));
 
@@ -43,6 +45,8 @@ const ESGSection = () => {
       <ScrollReveal delay={0.3} className="flex justify-center">
         <IPhoneMockup>
           <div className="h-full bg-white text-gray-900 flex flex-col">
+            {activeNav === "portfolio" ? (
+              <>
             <div className="pt-10 px-3 pb-1">
               <p className="text-[10px] uppercase tracking-widest opacity-50 text-center mb-2">ESG Analysis</p>
 
@@ -133,6 +137,13 @@ const ESGSection = () => {
                 )}
               </AnimatePresence>
             </div>
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center pt-10">
+                <p className="text-[11px] text-gray-400 capitalize">{activeNav} screen</p>
+              </div>
+            )}
+            <PhoneNavBar activeTab={activeNav} onTabChange={setActiveNav} />
           </div>
         </IPhoneMockup>
       </ScrollReveal>

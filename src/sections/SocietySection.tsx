@@ -6,6 +6,7 @@ import GradientHeadline from "@/components/aurora/GradientHeadline";
 import SectionLayout from "@/components/aurora/SectionLayout";
 import IPhoneMockup from "@/components/aurora/IPhoneMockup";
 import FilterToggleGroup from "@/components/aurora/FilterToggleGroup";
+import PhoneNavBar from "@/components/aurora/PhoneNavBar";
 
 const projects = [
   { id: 1, name: "Marina Solar Farm", region: "Marina Bay", category: "Clean Energy", status: "Completed", x: 62, y: 52, funding: "$12.4M", impact: "Powers 2,400 homes" },
@@ -23,6 +24,7 @@ const SocietySection = () => {
   const [viewMode, setViewMode] = useState("Map");
   const [statusFilter, setStatusFilter] = useState("All");
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
+  const [activeNav, setActiveNav] = useState("insights");
 
   const toggleCategory = (cat: string) => {
     setCategories((prev) => prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]);
@@ -61,6 +63,8 @@ const SocietySection = () => {
       <ScrollReveal delay={0.3} className="flex justify-center">
         <IPhoneMockup>
           <div className="h-full bg-white text-gray-900 flex flex-col">
+            {activeNav === "insights" ? (
+              <>
             <div className="pt-10 px-3 pb-1">
               <p className="text-[10px] uppercase tracking-widest opacity-50 text-center mb-2">Impact Map</p>
               {/* Category chips */}
@@ -100,7 +104,7 @@ const SocietySection = () => {
                     <text x="135" y="35" fontSize="4" fill="#9ca3af" fontFamily="sans-serif">Punggol</text>
                     <text x="25" y="68" fontSize="4" fill="#9ca3af" fontFamily="sans-serif">Tuas</text>
                     <text x="95" y="96" fontSize="4" fill="#9ca3af" fontFamily="sans-serif">Sentosa</text>
-                    <text x="105" y="108" fontSize="3.5" fill="#9ca3af" fontFamily="sans-serif">Semakau →</text>
+                    <text x="105" y="108" fontSize="3.5" fill="#9ca3af" fontFamily="sans-serif">{'Semakau \u2192'}</text>
                   </svg>
 
                   {/* Project dots */}
@@ -160,6 +164,13 @@ const SocietySection = () => {
                 </div>
               )}
             </div>
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center pt-10">
+                <p className="text-[11px] text-gray-400 capitalize">{activeNav} screen</p>
+              </div>
+            )}
+            <PhoneNavBar activeTab={activeNav} onTabChange={setActiveNav} />
           </div>
         </IPhoneMockup>
       </ScrollReveal>

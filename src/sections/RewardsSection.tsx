@@ -7,6 +7,7 @@ import SectionLayout from "@/components/aurora/SectionLayout";
 import IPhoneMockup from "@/components/aurora/IPhoneMockup";
 import FilterToggleGroup from "@/components/aurora/FilterToggleGroup";
 import { Slider } from "@/components/ui/slider";
+import PhoneNavBar from "@/components/aurora/PhoneNavBar";
 
 const tiers = [
   {
@@ -40,6 +41,7 @@ const RewardsSection = () => {
   const [impactScore, setImpactScore] = useState([50]);
   const [category, setCategory] = useState("All");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [activeNav, setActiveNav] = useState("portfolio");
 
   const currentTierIndex = tiers.findIndex((t) => impactScore[0] < t.threshold) - 1;
   const activeTier = currentTierIndex >= 0 ? currentTierIndex : impactScore[0] >= 85 ? 2 : -1;
@@ -65,6 +67,8 @@ const RewardsSection = () => {
       <ScrollReveal delay={0.3} className="flex justify-center">
         <IPhoneMockup>
           <div className="h-full bg-white text-gray-900 flex flex-col overflow-y-auto">
+            {activeNav === "portfolio" ? (
+              <>
             <div className="pt-10 px-3 pb-1">
               <p className="text-[10px] uppercase tracking-widest opacity-50 text-center mb-2">Rewards</p>
 
@@ -144,6 +148,13 @@ const RewardsSection = () => {
                 );
               })}
             </div>
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center pt-10">
+                <p className="text-[11px] text-gray-400 capitalize">{activeNav} screen</p>
+              </div>
+            )}
+            <PhoneNavBar activeTab={activeNav} onTabChange={setActiveNav} />
           </div>
         </IPhoneMockup>
       </ScrollReveal>

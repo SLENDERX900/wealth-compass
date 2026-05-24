@@ -6,6 +6,7 @@ import SectionLayout from "@/components/aurora/SectionLayout";
 import IPhoneMockup from "@/components/aurora/IPhoneMockup";
 import ImpactCounter from "@/components/aurora/ImpactCounter";
 import FilterToggleGroup from "@/components/aurora/FilterToggleGroup";
+import PhoneNavBar from "@/components/aurora/PhoneNavBar";
 
 const impactData: Record<string, Record<string, { co2: number; energy: number; water: number; co2Label: string; energyLabel: string; waterLabel: string }>> = {
   Personal: {
@@ -29,6 +30,7 @@ const ImpactSection = () => {
   const [tab, setTab] = useState("Personal");
   const [timeRange, setTimeRange] = useState("Year");
   const [format, setFormat] = useState<"abs" | "equiv">("abs");
+  const [activeNav, setActiveNav] = useState("insights");
 
   const data = impactData[tab][timeRange];
 
@@ -57,46 +59,44 @@ const ImpactSection = () => {
       <ScrollReveal delay={0.3} className="flex justify-center">
         <IPhoneMockup>
           <div className="h-full bg-white text-gray-900 flex flex-col">
-            <div className="pt-10 px-3 pb-2">
-              <p className="text-[10px] uppercase tracking-widest opacity-50 text-center mb-2">Impact Dashboard</p>
-
-              {/* Scope toggle */}
-              <FilterToggleGroup compact options={["Personal", "Community", "Global"]} selected={tab} onChange={setTab} className="justify-center mb-2" />
-
-              {/* Time range */}
-              <FilterToggleGroup compact options={["Month", "Year", "All"]} selected={timeRange} onChange={setTimeRange} className="justify-center mb-2" />
-
-              {/* Format toggle */}
-              <FilterToggleGroup compact options={["Numbers", "Equivalents"]} selected={format === "abs" ? "Numbers" : "Equivalents"} onChange={(v) => setFormat(v === "Numbers" ? "abs" : "equiv")} className="justify-center" />
-            </div>
-
-            {/* Metrics */}
-            <div className="flex-1 px-3 space-y-2 mt-2 overflow-y-auto">
-              {[
-                { icon: "🌿", label: "CO₂ Saved", value: data.co2, suffix: "t", equiv: data.co2Label, color: "bg-emerald-50 border-emerald-200" },
-                { icon: "⚡", label: "Clean Energy", value: data.energy, suffix: "%", equiv: data.energyLabel, color: "bg-cyan-50 border-cyan-200" },
-                { icon: "💧", label: "Water Saved", value: data.water, suffix: "kL", equiv: data.waterLabel, color: "bg-blue-50 border-blue-200" },
-              ].map((m) => (
-                <div key={m.label} className={`rounded-xl p-3 border ${m.color}`}>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm">{m.icon}</span>
-                    <span className="text-[10px] text-gray-500 uppercase tracking-wider">{m.label}</span>
-                  </div>
-                  {format === "abs" ? (
-                    <p className="text-xl font-light tabular-nums">
-                      <ImpactCounter value={m.value} suffix={m.suffix} decimals={m.suffix === "t" ? 1 : 0} />
-                    </p>
-                  ) : (
-                    <p className="text-sm font-medium text-gray-700">{m.equiv}</p>
-                  )}
+            {activeNav === "insights" ? (
+              <>
+                <div className="pt-10 px-3 pb-2">
+                  <p className="text-[10px] uppercase tracking-widest opacity-50 text-center mb-2">Impact Dashboard</p>
+                  <FilterToggleGroup compact options={["Personal", "Community", "Global"]} selected={tab} onChange={setTab} className="justify-center mb-2" />
+                  <FilterToggleGroup compact options={["Month", "Year", "All"]} selected={timeRange} onChange={setTimeRange} className="justify-center mb-2" />
+                  <FilterToggleGroup compact options={["Numbers", "Equivalents"]} selected={format === "abs" ? "Numbers" : "Equivalents"} onChange={(v) => setFormat(v === "Numbers" ? "abs" : "equiv")} className="justify-center" />
                 </div>
-              ))}
-            </div>
-
-            {/* Bottom indicator */}
-            <div className="px-3 pb-3 pt-2 text-center">
-              <p className="text-[9px] text-gray-400">{tab} · {timeRange === "All" ? "All Time" : timeRange === "Month" ? "This Month" : "This Year"}</p>
-            </div>
+                <div className="flex-1 px-3 space-y-2 mt-2 overflow-y-auto">
+                  {[
+                    { icon: "leaf", label: "CO2 Saved", value: data.co2, suffix: "t", equiv: data.co2Label, color: "bg-emerald-50 border-emerald-200" },
+                    { icon: "bolt", label: "Clean Energy", value: data.energy, suffix: "%", equiv: data.energyLabel, color: "bg-cyan-50 border-cyan-200" },
+                    { icon: "drop", label: "Water Saved", value: data.water, suffix: "kL", equiv: data.waterLabel, color: "bg-blue-50 border-blue-200" },
+                  ].map((m) => (
+                    <div key={m.label} className={`rounded-xl p-3 border ${m.color}`}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] text-gray-500 uppercase tracking-wider">{m.label}</span>
+                      </div>
+                      {format === "abs" ? (
+                        <p className="text-xl font-light tabular-nums">
+                          <ImpactCounter value={m.value} suffix={m.suffix} decimals={m.suffix === "t" ? 1 : 0} />
+                        </p>
+                      ) : (
+                        <p className="text-sm font-medium text-gray-700">{m.equiv}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="px-3 pb-1 pt-2 text-center">
+                  <p className="text-[9px] text-gray-400">{tab} · {timeRange === "All" ? "All Time" : timeRange === "Month" ? "This Month" : "This Year"}</p>
+                </div>
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center pt-10">
+                <p className="text-[11px] text-gray-400 capitalize">{activeNav} screen</p>
+              </div>
+            )}
+            <PhoneNavBar activeTab={activeNav} onTabChange={setActiveNav} />
           </div>
         </IPhoneMockup>
       </ScrollReveal>
